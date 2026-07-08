@@ -29,18 +29,11 @@ String::String(const char* cStr)
 // copy constructor
 String::String(const String& cpyStr)
 {
-    if (cpyStr.str == nullptr)
-    {
-        len = 0;
-        str = new char[1];
-        str[0] = '\0';
-    }
-    else
-    {
-        len = std::strlen(cpyStr.len);
-        str = new char[len + 1];
-        std::strcpy(str, cpyStr.str);
-    }
+    
+    len = cpyStr.len;
+    str = new char[len + 1];
+    std::strcpy(str, cpyStr.str);
+    
 }
 
 // destructor for chars
