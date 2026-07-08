@@ -1,12 +1,12 @@
 #pragma once
-#include <iostream>
+#include <string>
 
 // string class that will stores characters and prevent memory leakage
 class String
 {
     private:
         char* str;
-        int size;
+        size_t len;
 
     public:
 
@@ -14,6 +14,12 @@ class String
         String();
 
         // constructor from c-string
-        String(const char* c);
+        String(const char* cStr);
+
+        // copy constructor
+        String(const String& cpyStr);
+
+        // destructor for chars
+        ~String();
 
 };

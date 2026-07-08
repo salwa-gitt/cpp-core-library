@@ -1,18 +1,50 @@
-#include <iostream>
 #include <string.h>
 #include "myString.h"
 
 // default constructor
 String::String()
 {
-    str = "";
-    size = 0;
+    len = 0;
+    str = new char[1];
+    str[0] = '\0';
 }
 
 // constructor from c-string
-String::String(const char* c)
+String::String(const char* cStr)
 {
-    str = c;
-    size = strlen(c);
+    if (cStr == nullptr)
+    {
+        len = 0;
+        str = new char[1];
+        str[0] = '\0';
+    }
+    else
+    {
+        len = std::strlen(cStr)
+        str = new char[len + 1];
+        std::strcpy(str, cStr);
+    }
 }
 
+// copy constructor
+String::String(const String& cpyStr)
+{
+    if (cpyStr.str == nullptr)
+    {
+        len = 0;
+        str = new char[1];
+        str[0] = '\0';
+    }
+    else
+    {
+        len = std::strlen(cpyStr.len);
+        str = new char[len + 1];
+        std::strcpy(str, cpyStr.str);
+    }
+}
+
+// destructor for chars
+String::~String()
+{
+    delete[] str;
+}
