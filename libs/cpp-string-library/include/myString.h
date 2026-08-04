@@ -2,7 +2,7 @@
 #include <string>
 
 // string class that will stores characters and prevent memory leakage
-class String
+class MyString
 {
     private:
         char* str;
@@ -11,15 +11,21 @@ class String
     public:
 
         // default constructor
-        String();
+        MyString();
 
         // constructor from c-string
-        String(const char* cStr);
+        MyString(const char* cStr);
 
         // copy constructor
-        String(const String& cpyStr);
+        MyString(const String& cpyStr);
 
         // destructor for chars
-        ~String();
+        ~MyString();
+
+        // finding the length of a string
+        size_t length() const;
+
+        // finding if the string is empty or not
+        
 
 };

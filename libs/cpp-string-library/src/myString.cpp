@@ -2,7 +2,7 @@
 #include "myString.h"
 
 // default constructor
-String::String()
+MyString::MyString()
 {
     len = 0;
     str = new char[1];
@@ -10,7 +10,7 @@ String::String()
 }
 
 // constructor from c-string
-String::String(const char* cStr)
+MyString::MyString(const char* cStr)
 {
     if (cStr == nullptr)
     {
@@ -20,14 +20,14 @@ String::String(const char* cStr)
     }
     else
     {
-        len = std::strlen(cStr)
+        len = std::strlen(cStr);
         str = new char[len + 1];
         std::strcpy(str, cStr);
     }
 }
 
 // copy constructor
-String::String(const String& cpyStr)
+MyString::MyString(const MyString& cpyStr)
 {
     
     len = cpyStr.len;
@@ -37,7 +37,29 @@ String::String(const String& cpyStr)
 }
 
 // destructor for chars
-String::~String()
+MyString::~MyString()
 {
     delete[] str;
 }
+
+
+/*
+functions to implement
+length()
+empty()
+c_str() ?? idk about this one
+clear()
+*/
+// returning the size of the string
+size_t MyString::length() const
+{
+    return len;
+}
+/*
+if length(str) count == 0 then empty TRUE else FALSE
+*/
+// checking out if the string is empty or not
+
+/*
+clear()
+*/
