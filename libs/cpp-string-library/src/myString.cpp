@@ -55,14 +55,24 @@ size_t MyString::length() const
 {
     return len;
 }
-/*
-if length(str) count == 0 then empty TRUE else FALSE
-*/
+
 // checking out if the string is empty or not
 bool MyString::empty() const
 {
     return len == 0;
 }
-/*
-clear()
-*/
+
+// Returns a read-only C-style string pointer (const char*).
+const char* MyString::cStr() const
+{
+    return str ? str : "";
+}
+
+// Deletes the string and Returns an empty string instead
+void MyString::clear()
+{
+    delete[] str;
+    str = new char[1];
+    str[0] = '\0';
+    len = 0;
+}

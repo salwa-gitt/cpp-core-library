@@ -28,4 +28,9 @@ class MyString
         // finding if the string is empty or not
         bool empty() const;
 
+        // Returns a read-only C-style string pointer (const char*).
+        const char* cStr() const;
+
+        // Deletes the string and Returns an empty string instead
+        void clear();
 };
