@@ -17,7 +17,7 @@ class MyString
         MyString(const char* cStr);
 
         // copy constructor
-        MyString(const String& cpyStr);
+        MyString(const MyString& cpyStr);
 
         // destructor for chars
         ~MyString();
@@ -33,4 +33,7 @@ class MyString
 
         // Deletes the string and Returns an empty string instead
         void clear();
+
+        // Copy assignment operator
+        MyString& operator=(const MyString& other);
 };

@@ -1,5 +1,5 @@
 #include <string.h>
-#include "myString.h"
+#include "../include/myString.h"
 
 // default constructor
 MyString::MyString()
@@ -20,9 +20,9 @@ MyString::MyString(const char* cStr)
     }
     else
     {
-        len = std::strlen(cStr);
+        len = strlen(cStr);
         str = new char[len + 1];
-        std::strcpy(str, cStr);
+        strcpy(str, cStr);
     }
 }
 
@@ -30,9 +30,9 @@ MyString::MyString(const char* cStr)
 MyString::MyString(const MyString& cpyStr)
 {
     
-    len = cpyStr.len;
+    len = cpyStr.length();
     str = new char[len + 1];
-    std::strcpy(str, cpyStr.str);
+    strcpy(str, cpyStr.cStr());
     
 }
 
@@ -43,13 +43,6 @@ MyString::~MyString()
 }
 
 
-/*
-functions to implement
-length()
-empty()
-c_str() ?? idk about this one
-clear()
-*/
 // returning the size of the string
 size_t MyString::length() const
 {
@@ -76,3 +69,21 @@ void MyString::clear()
     str[0] = '\0';
     len = 0;
 }
+
+//Copy assignment operator
+MyString& MyString::operator=(const MyString& other)
+{
+    // Protect against self-assignment (e.g., str = str)
+    if (this == &other)
+    {
+        return *this;
+    }
+
+    clear();
+    len = other.length();
+    str = new char[len + 1];
+    strcpy(this->str, other.cStr());
+
+    return *this;
+}
+
