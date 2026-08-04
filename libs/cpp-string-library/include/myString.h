@@ -26,6 +26,6 @@ class MyString
         size_t length() const;
 
         // finding if the string is empty or not
-        
+        bool empty() const;
 
 };

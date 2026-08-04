@@ -59,7 +59,10 @@ size_t MyString::length() const
 if length(str) count == 0 then empty TRUE else FALSE
 */
 // checking out if the string is empty or not
-
+bool MyString::empty() const
+{
+    return len == 0;
+}
 /*
 clear()
 */
