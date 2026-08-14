@@ -36,4 +36,7 @@ class MyString
 
         // Copy assignment operator
         MyString& operator=(const MyString& other);
+
+        // move assignment operator (it will move the data from A to B and A will be empty)
+        MyString& operator=(MyString&& other);
 };

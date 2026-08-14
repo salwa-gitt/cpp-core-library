@@ -87,3 +87,26 @@ MyString& MyString::operator=(const MyString& other)
     return *this;
 }
 
+MyString& MyString::operator=(MyString&& other)
+{
+    // checking if we are trying to move the obj to itself
+    // if so do nothing
+    if (this == &other)
+    {
+        return *this;
+    }
+
+    // B might have old memory do something to prevent memory leak so we are clearing it 
+    clear();
+    
+    // move Data, Size, Capacity of A to B directly even the memory address
+    str = other.str;
+    len = other.len;
+
+    // free memory of A so when destructor is called it will do nothing to the data
+    other.str = nullptr;
+    other.len = 0;
+
+    return *this;
+
+}
