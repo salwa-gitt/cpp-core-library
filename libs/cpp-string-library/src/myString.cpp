@@ -1,6 +1,7 @@
 #include <string.h>
 #include "../include/myString.h"
 #include <iostream>
+#include <stdexcept>
 
 // default constructor
 MyString::MyString()
@@ -131,4 +132,17 @@ char& MyString::front()
 char& MyString::back()
 {
     return str[length() - 1];
+}
+
+// same at the operator[] but first making sure the indx is valid
+char& MyString::at(size_t indx)
+{
+    if (indx >= length())
+    {
+        throw std::out_of_range("Index out of bounds!");
+    }
+    else
+    {
+        return str[indx];
+    }
 }

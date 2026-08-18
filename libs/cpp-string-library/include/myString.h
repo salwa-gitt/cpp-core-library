@@ -48,5 +48,8 @@ class MyString
 
         // Gets teh last char
         char& back();
+
+        // it will varify if the indx is valid before returning it's char
+        char& at(size_t indx);
         
 };
