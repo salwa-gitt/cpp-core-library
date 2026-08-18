@@ -120,3 +120,15 @@ char& MyString::operator[](size_t indx)
 {
     return str[indx];
 }
+
+// Gets the first char
+char& MyString::front()
+{
+    return str[0];
+}
+
+// Gets the last char
+char& MyString::back()
+{
+    return str[length() - 1];
+}

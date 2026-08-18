@@ -42,5 +42,11 @@ class MyString
 
         // non-const operator[] so i can assing a new char at a specific index
         char& operator[](size_t indx);
+
+        // Gets the first char
+        char& front();
+
+        // Gets teh last char
+        char& back();
         
 };
