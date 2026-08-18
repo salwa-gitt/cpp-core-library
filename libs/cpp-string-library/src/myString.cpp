@@ -1,5 +1,6 @@
 #include <string.h>
 #include "../include/myString.h"
+#include <iostream>
 
 // default constructor
 MyString::MyString()
@@ -55,6 +56,7 @@ bool MyString::empty() const
     return len == 0;
 }
 
+
 // Returns a read-only C-style string pointer (const char*).
 const char* MyString::cStr() const
 {
@@ -73,6 +75,7 @@ void MyString::clear()
 //Copy assignment operator
 MyString& MyString::operator=(const MyString& other)
 {
+    std::cout << ">>> COPY ASSIGNMENT CALLED <<<\n";
     // Protect against self-assignment (e.g., str = str)
     if (this == &other)
     {
@@ -89,6 +92,7 @@ MyString& MyString::operator=(const MyString& other)
 
 MyString& MyString::operator=(MyString&& other)
 {
+    std::cout << ">>> MOVE ASSIGNMENT CALLED <<<\n";
     // checking if we are trying to move the obj to itself
     // if so do nothing
     if (this == &other)
@@ -109,4 +113,10 @@ MyString& MyString::operator=(MyString&& other)
 
     return *this;
 
+}
+
+// non-const operator[] so i can assing a new char at a specific index
+char& MyString::operator[](size_t indx)
+{
+    return str[indx];
 }

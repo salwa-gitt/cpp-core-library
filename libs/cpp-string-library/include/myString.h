@@ -39,4 +39,8 @@ class MyString
 
         // move assignment operator (it will move the data from A to B and A will be empty)
         MyString& operator=(MyString&& other);
+
+        // non-const operator[] so i can assing a new char at a specific index
+        char& operator[](size_t indx);
+        
 };
