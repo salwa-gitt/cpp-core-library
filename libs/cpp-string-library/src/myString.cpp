@@ -76,7 +76,6 @@ void MyString::clear()
 //Copy assignment operator
 MyString& MyString::operator=(const MyString& other)
 {
-    std::cout << ">>> COPY ASSIGNMENT CALLED <<<\n";
     // Protect against self-assignment (e.g., str = str)
     if (this == &other)
     {
@@ -93,7 +92,6 @@ MyString& MyString::operator=(const MyString& other)
 
 MyString& MyString::operator=(MyString&& other)
 {
-    std::cout << ">>> MOVE ASSIGNMENT CALLED <<<\n";
     // checking if we are trying to move the obj to itself
     // if so do nothing
     if (this == &other)
@@ -136,6 +134,37 @@ char& MyString::back()
 
 // same at the operator[] but first making sure the indx is valid
 char& MyString::at(size_t indx)
+{
+    if (indx >= length())
+    {
+        throw std::out_of_range("Index out of bounds!");
+    }
+    else
+    {
+        return str[indx];
+    }
+}
+
+// const operator[] so i can assing a new char at a specific index
+const char& MyString::operator[](size_t indx) const
+{
+    return str[indx];
+}
+
+// const func for getting the first char
+char& MyString::front()
+{
+    return str[0];
+}
+
+// const func for getting the last char
+const char& MyString::back() const
+{
+    return str[length() - 1];
+}
+
+// const version of at()
+const char& MyString::at(size_t indx) const
 {
     if (indx >= length())
     {

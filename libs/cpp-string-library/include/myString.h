@@ -51,5 +51,17 @@ class MyString
 
         // it will varify if the indx is valid before returning it's char
         char& at(size_t indx);
+
+        // const operator[] so i can assing a new char at a specific index
+        const char& operator[](size_t indx) const;
+
+        // const func to get the first char
+        const char& front() const;
+
+        // const func to get the last char
+        const char& back() const;
+
+        // a const version of at()
+        const char& at(size_t indx) const;
         
 };
