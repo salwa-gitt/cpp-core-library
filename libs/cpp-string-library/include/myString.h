@@ -63,5 +63,19 @@ class MyString
 
         // a const version of at()
         const char& at(size_t indx) const;
+
+        friend bool operator==(const MyString& lhs, const MyString& rhs);
+        friend bool operator!=(const MyString& lhs, const MyString& rhs);
+        friend bool operator<(const MyString& lhs, const MyString& rhs);
+        friend bool operator>(const MyString& lhs, const MyString& rhs);
+        friend bool operator<=(const MyString& lhs, const MyString& rhs);
+        friend bool operator>=(const MyString& lhs, const MyString& rhs);
         
 };
+
+bool operator==(const MyString& lhs, const MyString& rhs);
+bool operator!=(const MyString& lhs, const MyString& rhs);
+bool operator<(const MyString& lhs, const MyString& rhs);
+bool operator>(const MyString& lhs, const MyString& rhs);
+bool operator<=(const MyString& lhs, const MyString& rhs);
+bool operator>=(const MyString& lhs, const MyString& rhs);

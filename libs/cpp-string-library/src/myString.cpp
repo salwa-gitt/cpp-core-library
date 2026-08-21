@@ -175,3 +175,66 @@ const char& MyString::at(size_t indx) const
         return str[indx];
     }
 }
+
+
+bool operator==(const MyString& lhs, const MyString& rhs)
+{
+    if (lhs.length() != rhs.length())
+    {
+        return false;
+    }
+    else
+    {
+        for (int i = 0; i < lhs.length(); i++)
+        {
+            if (lhs.str[i] != rhs.str[i])
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
+
+
+bool operator!=(const MyString& lhs, const MyString& rhs)
+{
+    return !(lhs == rhs);
+}
+
+bool operator<(const MyString& lhs, const MyString& rhs)
+{
+
+    // Find the length of the shorter string
+    int shorterLength = (lhs.length() < rhs.length()) ? lhs.length() : rhs.length();
+
+    // Compare characters at the same position
+    for (int i = 0; i < shorterLength; i++)
+    {
+        if (lhs.str[i] != rhs.str[i])
+        {
+            // If characters are different, we already know the answer
+            return lhs.str[i] < rhs.str[i];
+        }
+    }
+
+    // If no characters were different, compare the string lengths
+    return lhs.length() < rhs.length();
+}
+
+bool operator>(const MyString& lhs, const MyString& rhs)
+{
+    return rhs < lhs;
+}
+
+bool operator<=(const MyString& lhs, const MyString& rhs)
+{
+    return !(lhs > rhs);
+}
+
+bool operator>=(const MyString& lhs, const MyString& rhs)
+{
+    return !(lhs < rhs);
+}
+
