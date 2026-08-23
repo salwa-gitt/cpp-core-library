@@ -250,11 +250,8 @@ MyString& MyString::append(const MyString& other)
     
     delete[] this->str;
 
-    this->str = temp.str;
-    this->len = temp.length();
-    temp.str = nullptr;
-
-
+    this->str = newStr;
+    this->len = totalLen;
     return *this;
 
 }
@@ -266,7 +263,7 @@ MyString& MyString::operator+=(const MyString& other)
 }
 
 
-MyString MyString::operator+(const MyString& other)
+MyString MyString::operator+(const MyString& other) const
 {
     MyString temp;
 
