@@ -152,7 +152,7 @@ const char& MyString::operator[](size_t indx) const
 }
 
 // const func for getting the first char
-char& MyString::front()
+const char& MyString::front() const
 {
     return str[0];
 }
@@ -238,3 +238,25 @@ bool operator>=(const MyString& lhs, const MyString& rhs)
     return !(lhs < rhs);
 }
 
+
+MyString& MyString::append(const MyString& other)
+{
+    MyString temp;
+
+    temp.len = this->length() + other.length();
+    temp.str = new char[temp.length() + 1];
+
+    strcpy(temp.str, this->str);
+    strcat(temp.str, other.str);
+    
+    
+    delete[] this->str;
+
+    this->str = temp.str;
+    this->len = temp.length();
+    temp.str = nullptr;
+
+
+    return *this;
+
+}

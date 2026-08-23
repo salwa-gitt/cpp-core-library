@@ -70,6 +70,8 @@ class MyString
         friend bool operator>(const MyString& lhs, const MyString& rhs);
         friend bool operator<=(const MyString& lhs, const MyString& rhs);
         friend bool operator>=(const MyString& lhs, const MyString& rhs);
+
+        MyString& append(const MyString& other);
         
 };
 
