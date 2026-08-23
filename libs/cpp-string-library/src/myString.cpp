@@ -260,3 +260,9 @@ MyString& MyString::append(const MyString& other)
     return *this;
 
 }
+
+MyString& MyString::operator+=(const MyString& other)
+{
+    this->append(other);
+    return *this;
+}
