@@ -266,3 +266,13 @@ MyString& MyString::operator+=(const MyString& other)
     this->append(other);
     return *this;
 }
+
+
+MyString MyString::operator+(const MyString& other)
+{
+    MyString temp;
+
+    temp = *this;
+    temp += other;
+    return temp;
+}

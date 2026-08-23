@@ -74,6 +74,8 @@ class MyString
         MyString& append(const MyString& other);
 
         MyString& operator+=(const MyString& other);
+
+        MyString operator+(const MyString& other);
         
 };
 
