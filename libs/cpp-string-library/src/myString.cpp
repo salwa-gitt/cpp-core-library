@@ -241,13 +241,11 @@ bool operator>=(const MyString& lhs, const MyString& rhs)
 
 MyString& MyString::append(const MyString& other)
 {
-    MyString temp;
+    int totalLen = this->length() + other.length();
+    char* newStr = new char[totalLen + 1];
 
-    temp.len = this->length() + other.length();
-    temp.str = new char[temp.length() + 1];
-
-    strcpy(temp.str, this->str);
-    strcat(temp.str, other.str);
+    strcpy(newStr, this->str);
+    strcat(newStr, other.str);
     
     
     delete[] this->str;
