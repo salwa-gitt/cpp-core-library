@@ -278,3 +278,13 @@ void MyString::push_back(char c)
     str[len+1] = '\0';
     len += 1;
 }
+
+void MyString::pop_back()
+{
+    if (len == 0)
+    {
+        return;
+    }
+    str[len - 1] = '\0';
+    len -= 1; 
+}

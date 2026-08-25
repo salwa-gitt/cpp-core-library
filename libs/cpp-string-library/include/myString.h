@@ -78,6 +78,7 @@ class MyString
         MyString operator+(const MyString& other) const;
 
         void push_back(char c);
+        void pop_back();
         
 };
 
