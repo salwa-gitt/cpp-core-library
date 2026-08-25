@@ -271,3 +271,10 @@ MyString MyString::operator+(const MyString& other) const
     temp += other;
     return temp;
 }
+
+void MyString::push_back(char c)
+{
+    str[len] = c;
+    str[len+1] = '\0';
+    len += 1;
+}
