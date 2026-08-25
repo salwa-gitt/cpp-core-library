@@ -288,3 +288,41 @@ void MyString::pop_back()
     str[len - 1] = '\0';
     len -= 1; 
 }
+
+MyString& MyString::insert(size_t indx, const MyString& other)
+{
+    size_t shift_len = other.length();
+
+    // calculate new length
+    size_t new_length = length() + shift_len;
+
+    // preserver old length
+    size_t old_length = length();
+
+    // save a copy of other
+    MyString savedOther(other);
+
+    // allocate new buffer
+    char* new_str = new char[new_length + 1];
+
+    // putt old str into the new buffer
+    strcpy(new_str, str);
+    delete[] str;
+    str = new_str;
+    len = new_length;
+
+    // shift char backwards
+    for (int i = static_cast<int>(old_length); i >= static_cast<int>(indx); i--)
+    {
+        str[i + shift_len] = str[i];
+    }
+
+    // copy savedOther into the gap
+    for ( int i = indx; i < (shift_len + indx); i++)
+    {
+        str[i] = savedOther.str[i - indx];
+    }
+    
+    return *this;
+
+}

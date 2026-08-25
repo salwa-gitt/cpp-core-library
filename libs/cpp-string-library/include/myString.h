@@ -79,6 +79,8 @@ class MyString
 
         void push_back(char c);
         void pop_back();
+
+        MyString& insert(size_t indx, const MyString& other);
         
 };
 
