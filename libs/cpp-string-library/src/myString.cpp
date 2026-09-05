@@ -291,6 +291,10 @@ void MyString::pop_back()
 
 MyString& MyString::insert(size_t indx, const MyString& other)
 {
+    if (indx > length())
+    {
+        return *this;
+    }
     size_t shift_len = other.length();
 
     // calculate new length
@@ -323,6 +327,30 @@ MyString& MyString::insert(size_t indx, const MyString& other)
         str[i] = savedOther.str[i - indx];
     }
     
+    return *this;
+
+}
+
+// making erase func but it still works the same as the insert fun but in opposite i think
+MyString& MyString::erase(size_t indx, size_t count)
+{
+
+    if (indx > length() || (indx + count) > length() || count == 0)
+    {
+        return *this;
+    }
+
+    // calculate new length
+    size_t new_length = length() - count;
+
+
+    for (int i = indx; i + count <= length(); i++)
+    {
+        str[i] = str[i+count];
+    }
+
+    len = new_length;
+
     return *this;
 
 }

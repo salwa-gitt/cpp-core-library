@@ -81,6 +81,7 @@ class MyString
         void pop_back();
 
         MyString& insert(size_t indx, const MyString& other);
+        MyString& erase(size_t indx, size_t count);
         
 };
 
