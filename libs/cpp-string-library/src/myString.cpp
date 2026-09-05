@@ -354,3 +354,64 @@ MyString& MyString::erase(size_t indx, size_t count)
     return *this;
 
 }
+
+MyString& MyString::replace(size_t indx, size_t count, const MyString& other)
+{
+
+    if (indx > length() || (indx + count) > length() || count == 0)
+    {
+        return *this;
+    }
+
+    int old_length = length();
+
+    size_t prefix_length = indx;
+    char* prefix = new char[prefix_length + 1];
+
+    for (int i = 0; i < prefix_length; i++)
+    {
+        prefix[i] = str[i];
+    }
+
+    prefix[prefix_length] = '\0';
+
+    // 3. Save the suffix
+    size_t suffix_length = old_length - (indx + count);
+    char* suffix = new char[suffix_length + 1];
+
+    for ( int i = 0; i < suffix_length; i++)
+    {
+        suffix[i] = str[indx + count + i];
+    }
+
+    suffix[suffix_length] = '\0';
+
+
+    len = prefix_length + other.length() + suffix_length;
+
+    // 5. Create the new string buffer
+    char* new_str = new char[len + 1];
+
+    // 6. Start with an empty C-string
+    new_str[0] = '\0';
+
+    // 7. Build: prefix + other + suffix
+    strcat(new_str, prefix);
+    strcat(new_str, other.str);
+    strcat(new_str, suffix);
+
+
+    // 8. Delete the old string
+    delete[] str;
+
+    // 9. Point str to the new string
+    str = new_str;
+
+
+    // 10. Clean up temporary strings
+    delete[] prefix;
+    delete[] suffix;
+
+    return *this;
+
+}
