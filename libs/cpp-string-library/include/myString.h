@@ -10,6 +10,8 @@ class MyString
 
     public:
 
+        static const size_t npos = -1;
+
         // default constructor
         MyString();
 
@@ -83,6 +85,7 @@ class MyString
         MyString& insert(size_t indx, const MyString& other);
         MyString& erase(size_t indx, size_t count);
         MyString& replace(size_t indx, size_t count, const MyString& other);
+        size_t find(const MyString& other, size_t pos = 0);
         
 };
 

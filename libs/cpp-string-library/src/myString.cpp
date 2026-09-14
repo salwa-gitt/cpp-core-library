@@ -415,3 +415,43 @@ MyString& MyString::replace(size_t indx, size_t count, const MyString& other)
     return *this;
 
 }
+
+size_t MyString::find(const MyString& other, size_t pos)
+{
+    // to see if the pos is legit
+    if (pos >= this->length())
+    {
+        return npos;
+    }
+
+    size_t main_str_len = length();
+    size_t match_position;
+
+    for (int i = pos; i < main_str_len; i++)
+    {
+        if ((main_str_len - i) < other.length())
+        {
+            return npos;
+        }
+
+        bool match = true;
+
+        for (int j = 0; j < other.length(); j++)
+        {
+            if (this->str[i+j] != other.str[j])
+            {
+                match = false;
+                break;
+            }
+        }
+
+        if (match)
+        {
+            return i;
+        }
+    }
+
+        
+        return npos;
+    
+}
