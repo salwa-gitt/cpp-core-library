@@ -86,6 +86,7 @@ class MyString
         MyString& erase(size_t indx, size_t count);
         MyString& replace(size_t indx, size_t count, const MyString& other);
         size_t find(const MyString& other, size_t pos = 0);
+        size_t rfind(const MyString& other, size_t pos = npos);
         
 };
 

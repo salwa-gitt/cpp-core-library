@@ -427,6 +427,8 @@ size_t MyString::find(const MyString& other, size_t pos)
     size_t main_str_len = length();
     size_t match_position;
 
+    
+    
     for (int i = pos; i < main_str_len; i++)
     {
         if ((main_str_len - i) < other.length())
@@ -452,6 +454,55 @@ size_t MyString::find(const MyString& other, size_t pos)
     }
 
         
-        return npos;
+    return npos;
     
+}
+
+size_t MyString::rfind(const MyString& other, size_t pos)
+{
+    
+    size_t  other_len = other.length();
+    size_t  this_len = length();
+
+    if (other_len == 0)
+    {
+        return (pos == npos || pos > this_len) ? this_len : pos;
+    }
+
+    if (pos == npos)
+    {
+        pos = this_len - 1;
+    }
+
+    if (pos >= this_len)
+    {
+        return npos;
+    }
+
+    for (int i = static_cast<int>(pos); i >= 0; i--)
+    {
+        if ((this_len - i) < other_len)
+        {
+            continue;;
+        }
+
+        bool match = true;
+
+        for (int j = static_cast<int>(other_len) - 1; j >= 0; j--)
+        {
+            if (str[i + j] != other.str[j])
+            {
+                match = false;
+                break;
+            }
+        }
+
+        if (match)
+        {
+            return i;
+        }
+    }
+
+    return npos;
+
 }
