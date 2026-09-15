@@ -88,6 +88,7 @@ class MyString
         size_t find(const MyString& other, size_t pos = 0);
         size_t rfind(const MyString& other, size_t pos = npos);
         bool contains(const MyString& other);
+        bool starts_with(const MyString& other);
         
 };
 

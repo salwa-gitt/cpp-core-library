@@ -547,7 +547,43 @@ bool MyString::contains(const MyString& other)
         }
     }
 
-    return false;
+    return false; 
+}
+
+bool MyString::starts_with(const MyString& other)
+{
+    size_t other_len = other.length();
+    size_t this_len = length();
     
 
+    if (other_len > this_len || other_len == 0)
+    {
+        return false;
+    }
+
+    for (int i = 0; i < static_cast<int>(other_len); i++)
+    {
+        bool match = true;
+
+        for (int j = 0; j < static_cast<int>(other_len); j++)
+        {
+            if (this->str[i+j] != other.str[j])
+            {
+                match = false;
+                break;
+
+            }
+        }
+
+        if (match)
+        {
+            return true;
+        }
+        else
+        {
+            continue;
+        }
+    }
+
+    return false; 
 }
