@@ -563,27 +563,39 @@ bool MyString::starts_with(const MyString& other)
 
     for (int i = 0; i < static_cast<int>(other_len); i++)
     {
-        bool match = true;
-
-        for (int j = 0; j < static_cast<int>(other_len); j++)
-        {
-            if (this->str[i+j] != other.str[j])
+        if (this->str[i] != other.str[i])
             {
-                match = false;
+                return false;
                 break;
 
             }
-        }
+    }
 
-        if (match)
+    return true; 
+}
+
+bool MyString::ends_with(const MyString& other)
+{
+    size_t other_len = other.length();
+    size_t this_len = length();
+    size_t start_indx = this_len - other_len;
+    
+
+    if (other_len > this_len || other_len == 0)
+    {
+        return false;
+    }
+
+
+    for (int j = start_indx; j < static_cast<int>(other_len + start_indx); j++)
+    {
+        if (this->str[j] != other.str[j - start_indx])
         {
-            return true;
-        }
-        else
-        {
-            continue;
+            return false;
+            break;
+
         }
     }
 
-    return false; 
+    return true; 
 }
