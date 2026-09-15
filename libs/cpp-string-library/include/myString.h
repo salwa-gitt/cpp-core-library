@@ -90,6 +90,7 @@ class MyString
         bool contains(const MyString& other);
         bool starts_with(const MyString& other);
         bool ends_with(const MyString& other);
+        MyString substr(size_t pos = 0, size_t count = npos);
         
 };
 

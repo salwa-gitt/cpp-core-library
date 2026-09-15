@@ -599,3 +599,19 @@ bool MyString::ends_with(const MyString& other)
 
     return true; 
 }
+
+
+MyString MyString::substr(size_t pos, size_t count)
+{
+    char* sub_str = new char[count + 1];
+
+    for (int i = pos; i < (pos + count); i++)
+    {
+        sub_str[i - pos] = str[i];
+    }
+
+    sub_str[count] = '\0';
+    MyString result(sub_str);;
+    delete[] sub_str;
+    return result;
+}
