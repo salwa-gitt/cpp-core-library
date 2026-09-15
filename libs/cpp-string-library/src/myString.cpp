@@ -506,3 +506,48 @@ size_t MyString::rfind(const MyString& other, size_t pos)
     return npos;
 
 }
+
+bool MyString::contains(const MyString& other)
+{
+    size_t other_len = other.length();
+    size_t this_len = length();
+    
+
+    if (other_len > this_len || other_len == 0)
+    {
+        return false;
+    }
+
+    for (int i = 0; i < static_cast<int>(this_len); i++)
+    {
+        bool match = true;
+
+        if ((this_len - i) < other_len)
+        {
+            return false;
+        }
+
+        for (int j = 0; j < static_cast<int>(other_len); j++)
+        {
+            if (this->str[i+j] != other.str[j])
+            {
+                match = false;
+                break;
+
+            }
+        }
+
+        if (match)
+        {
+            return true;
+        }
+        else
+        {
+            continue;
+        }
+    }
+
+    return false;
+    
+
+}
