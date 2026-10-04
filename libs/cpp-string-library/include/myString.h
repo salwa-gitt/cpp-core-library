@@ -21,6 +21,9 @@ class MyString
         // copy constructor
         MyString(const MyString& cpyStr);
 
+        // move constructor
+        MyString(MyString&& other);
+
         // destructor for chars
         ~MyString();
 
@@ -91,6 +94,8 @@ class MyString
         bool starts_with(const MyString& other);
         bool ends_with(const MyString& other);
         MyString substr(size_t pos = 0, size_t count = npos);
+        int compare(const MyString& other);
+        void swap(MyString& other);
         
 };
 

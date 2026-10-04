@@ -38,6 +38,16 @@ MyString::MyString(const MyString& cpyStr)
     
 }
 
+// move constructor
+MyString::MyString(MyString&& other)
+{
+    str = other.str;
+    len = other.len;
+
+    other.str = nullptr;
+    other.len = 0;
+}
+
 // destructor for chars
 MyString::~MyString()
 {
@@ -614,4 +624,56 @@ MyString MyString::substr(size_t pos, size_t count)
     MyString result(sub_str);;
     delete[] sub_str;
     return result;
+}
+
+int MyString::compare(const MyString& other)
+{
+    int loop_len = 0;
+
+    if (length() < other.length())
+    {
+        loop_len = static_cast<int>(length());
+    }
+    else if (other.length() < length())
+    {
+        loop_len = static_cast<int>(other.length());
+    }
+
+    for (int i = 0; i < loop_len; i++)
+    {
+        if (str[i] < other.str[i])
+        {
+            return -1;
+        }
+        else if (str[i] > other.str[i])
+        {
+            return 1;
+        }
+        
+    }
+
+    if (length() < other.length())
+    {
+        return -1;
+    }
+    else if (length() > other.length())
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+void MyString::swap(MyString& other)
+{
+    char* temp_str = str;
+
+    str = other.str;
+    other.str = temp_str;
+
+    size_t temp_len = len;
+    len = other.len;
+    other.len = temp_len;
 }
