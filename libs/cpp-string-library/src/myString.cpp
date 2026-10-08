@@ -1,12 +1,14 @@
-#include <string.h>
-#include "../include/myString.h"
-#include <iostream>
+#include <cstring>
 #include <stdexcept>
+
+#include "../include/myString.h"
+
 
 // default constructor
 MyString::MyString()
 {
     len = 0;
+    cap = 0;
     str = new char[1];
     str[0] = '\0';
 }
@@ -17,14 +19,16 @@ MyString::MyString(const char* cStr)
     if (cStr == nullptr)
     {
         len = 0;
+        cap = 0;
         str = new char[1];
         str[0] = '\0';
     }
     else
     {
-        len = strlen(cStr);
-        str = new char[len + 1];
-        strcpy(str, cStr);
+        len = std::strlen(cStr);
+        cap = len;
+        str = new char[cap + 1];
+        std::strcpy(str, cStr);
     }
 }
 
@@ -32,9 +36,10 @@ MyString::MyString(const char* cStr)
 MyString::MyString(const MyString& cpyStr)
 {
     
-    len = cpyStr.length();
-    str = new char[len + 1];
-    strcpy(str, cpyStr.cStr());
+    len = cpyStr.len;
+    cap = cpyStr.cap;
+    str = new char[cap + 1];
+    std::strcpy(str, cpyStr.str);
     
 }
 
@@ -43,9 +48,11 @@ MyString::MyString(MyString&& other)
 {
     str = other.str;
     len = other.len;
+    cap = other.cap;
 
     other.str = nullptr;
     other.len = 0;
+    other.cap = 0;
 }
 
 // destructor for chars
@@ -78,9 +85,13 @@ const char* MyString::cStr() const
 void MyString::clear()
 {
     delete[] str;
+
+    len = 0;
+    cap = 0;
+
     str = new char[1];
     str[0] = '\0';
-    len = 0;
+    
 }
 
 //Copy assignment operator
@@ -92,11 +103,14 @@ MyString& MyString::operator=(const MyString& other)
         return *this;
     }
 
-    clear();
-    len = other.length();
-    str = new char[len + 1];
-    strcpy(this->str, other.cStr());
+    char* new_str = new char[other.cap + 1];
+    std::strcpy(new_str, other.str);
+    delete[] str;
 
+    str = new_str;
+    len = other.len;
+    cap = other.cap;
+    
     return *this;
 }
 
@@ -109,16 +123,16 @@ MyString& MyString::operator=(MyString&& other)
         return *this;
     }
 
-    // B might have old memory do something to prevent memory leak so we are clearing it 
-    clear();
+    delete[] str;
     
-    // move Data, Size, Capacity of A to B directly even the memory address
     str = other.str;
     len = other.len;
+    cap = other.cap;
 
     // free memory of A so when destructor is called it will do nothing to the data
     other.str = nullptr;
     other.len = 0;
+    other.cap = 0;
 
     return *this;
 
@@ -195,7 +209,7 @@ bool operator==(const MyString& lhs, const MyString& rhs)
     }
     else
     {
-        for (int i = 0; i < lhs.length(); i++)
+        for (size_t i = 0; i < lhs.length(); i++)
         {
             if (lhs.str[i] != rhs.str[i])
             {
@@ -251,25 +265,53 @@ bool operator>=(const MyString& lhs, const MyString& rhs)
 
 MyString& MyString::append(const MyString& other)
 {
-    int totalLen = this->length() + other.length();
-    char* newStr = new char[totalLen + 1];
+    if (this == &other)
+    {
+        MyString copy(other);
+        return append(copy);
+    }
 
-    strcpy(newStr, this->str);
-    strcat(newStr, other.str);
-    
-    
-    delete[] this->str;
+    if (other.len == 0)
+    {
+        return *this;
+    }
 
-    this->str = newStr;
-    this->len = totalLen;
+    size_t old_len = len;
+    size_t new_len = len + other.len;
+
+    if (new_len > cap)
+    {
+        size_t new_cap = cap;
+
+        if (new_cap == 0)
+        {
+            new_cap = 1;
+        }
+
+        while (new_cap < new_len)
+        {
+            new_cap *= 2;
+        }
+
+        reserve(new_cap);
+        
+    }
+
+    for (size_t i = 0; i < other.len; i++)
+    {
+        str[old_len + i] = other.str[i];
+    }
+
+    len = new_len;
+    str[len] = '\0';
+    
     return *this;
 
 }
 
 MyString& MyString::operator+=(const MyString& other)
 {
-    this->append(other);
-    return *this;
+    return append(other);
 }
 
 
@@ -284,9 +326,15 @@ MyString MyString::operator+(const MyString& other) const
 
 void MyString::push_back(char c)
 {
+    if (len == cap)
+    {
+        size_t new_cap = (cap == 0) ? 1 : cap * 2;
+        reserve(new_cap);
+    }
+
     str[len] = c;
-    str[len+1] = '\0';
-    len += 1;
+    len++;
+    str[len] = '\0';
 }
 
 void MyString::pop_back()
@@ -295,48 +343,51 @@ void MyString::pop_back()
     {
         return;
     }
-    str[len - 1] = '\0';
-    len -= 1; 
+
+    len--;
+    str[len] = '\0';
 }
 
 MyString& MyString::insert(size_t indx, const MyString& other)
 {
-    if (indx > length())
+    if (indx > len || other.len == 0)
     {
         return *this;
     }
-    size_t shift_len = other.length();
 
-    // calculate new length
-    size_t new_length = length() + shift_len;
+    // Make a copy so self-insertion is safe.
+    MyString copy(other);
 
-    // preserver old length
-    size_t old_length = length();
+    size_t new_len = len + copy.len;
 
-    // save a copy of other
-    MyString savedOther(other);
-
-    // allocate new buffer
-    char* new_str = new char[new_length + 1];
-
-    // putt old str into the new buffer
-    strcpy(new_str, str);
-    delete[] str;
-    str = new_str;
-    len = new_length;
-
-    // shift char backwards
-    for (int i = static_cast<int>(old_length); i >= static_cast<int>(indx); i--)
+    // Make sure there is enough space.
+    if (new_len > cap)
     {
-        str[i + shift_len] = str[i];
+        size_t new_cap = (cap == 0) ? 1 : cap;
+
+        while (new_cap < new_len)
+        {
+            new_cap *= 2;
+        }
+
+        reserve(new_cap);
     }
 
-    // copy savedOther into the gap
-    for ( int i = indx; i < (shift_len + indx); i++)
+    // Shift the existing characters (including '\0')
+    // to the right to make room.
+    for (size_t i = len + 1; i > indx; --i)
     {
-        str[i] = savedOther.str[i - indx];
+        str[i + copy.len - 1] = str[i - 1];
     }
-    
+
+    // Copy the new string into the gap.
+    for (size_t i = 0; i < copy.len; ++i)
+    {
+        str[indx + i] = copy.str[i];
+    }
+
+    len = new_len;
+
     return *this;
 
 }
@@ -345,21 +396,22 @@ MyString& MyString::insert(size_t indx, const MyString& other)
 MyString& MyString::erase(size_t indx, size_t count)
 {
 
-    if (indx > length() || (indx + count) > length() || count == 0)
+    if (indx >= len || count == 0)
     {
         return *this;
     }
 
-    // calculate new length
-    size_t new_length = length() - count;
-
-
-    for (int i = indx; i + count <= length(); i++)
+    if (count > len - indx)
     {
-        str[i] = str[i+count];
+        count = len - indx;
     }
 
-    len = new_length;
+    for (size_t i = indx; i + count <= len; i++)
+    {
+        str[i] = str[i + count];
+    }
+
+    len -= count;
 
     return *this;
 
@@ -368,89 +420,52 @@ MyString& MyString::erase(size_t indx, size_t count)
 MyString& MyString::replace(size_t indx, size_t count, const MyString& other)
 {
 
-    if (indx > length() || (indx + count) > length() || count == 0)
+    if (indx > len)
     {
         return *this;
     }
 
-    int old_length = length();
-
-    size_t prefix_length = indx;
-    char* prefix = new char[prefix_length + 1];
-
-    for (int i = 0; i < prefix_length; i++)
+    if (count > len - indx)
     {
-        prefix[i] = str[i];
+        count = len - indx;
     }
 
-    prefix[prefix_length] = '\0';
+    MyString copy(other);
 
-    // 3. Save the suffix
-    size_t suffix_length = old_length - (indx + count);
-    char* suffix = new char[suffix_length + 1];
-
-    for ( int i = 0; i < suffix_length; i++)
-    {
-        suffix[i] = str[indx + count + i];
-    }
-
-    suffix[suffix_length] = '\0';
-
-
-    len = prefix_length + other.length() + suffix_length;
-
-    // 5. Create the new string buffer
-    char* new_str = new char[len + 1];
-
-    // 6. Start with an empty C-string
-    new_str[0] = '\0';
-
-    // 7. Build: prefix + other + suffix
-    strcat(new_str, prefix);
-    strcat(new_str, other.str);
-    strcat(new_str, suffix);
-
-
-    // 8. Delete the old string
-    delete[] str;
-
-    // 9. Point str to the new string
-    str = new_str;
-
-
-    // 10. Clean up temporary strings
-    delete[] prefix;
-    delete[] suffix;
+    erase(indx, count);
+    insert(indx, copy);
 
     return *this;
 
 }
 
-size_t MyString::find(const MyString& other, size_t pos)
+size_t MyString::find(const MyString& other, size_t pos) const
 {
-    // to see if the pos is legit
-    if (pos >= this->length())
+    // Empty string is found at pos
+    if (other.len == 0)
+    {
+        return (pos <= len) ? pos : npos;
+    }
+
+    // Search starts beyond the possible range
+    if (pos >= len)
     {
         return npos;
     }
 
-    size_t main_str_len = length();
-    size_t match_position;
-
-    
-    
-    for (int i = pos; i < main_str_len; i++)
+    // Not enough characters remaining
+    if (other.len > len - pos)
     {
-        if ((main_str_len - i) < other.length())
-        {
-            return npos;
-        }
+        return npos;
+    }
 
+    for (size_t i = pos; i <= len - other.len; ++i)
+    {
         bool match = true;
 
-        for (int j = 0; j < other.length(); j++)
+        for (size_t j = 0; j < other.len; ++j)
         {
-            if (this->str[i+j] != other.str[j])
+            if (str[i + j] != other.str[j])
             {
                 match = false;
                 break;
@@ -463,42 +478,34 @@ size_t MyString::find(const MyString& other, size_t pos)
         }
     }
 
-        
     return npos;
-    
 }
 
-size_t MyString::rfind(const MyString& other, size_t pos)
+size_t MyString::rfind(const MyString& other, size_t pos) const
 {
     
-    size_t  other_len = other.length();
-    size_t  this_len = length();
-
-    if (other_len == 0)
+    if (other.len == 0)
     {
-        return (pos == npos || pos > this_len) ? this_len : pos;
+        return (pos == npos || pos > len) ? len : pos;
     }
 
-    if (pos == npos)
-    {
-        pos = this_len - 1;
-    }
-
-    if (pos >= this_len)
+    if (other.len > len)
     {
         return npos;
     }
 
-    for (int i = static_cast<int>(pos); i >= 0; i--)
-    {
-        if ((this_len - i) < other_len)
-        {
-            continue;;
-        }
+    size_t start = len - other.len;
 
+    if (pos != npos && pos < start)
+    {
+        start = pos;
+    }
+
+    for (size_t i = start + 1; i-- > 0;)
+    {
         bool match = true;
 
-        for (int j = static_cast<int>(other_len) - 1; j >= 0; j--)
+        for (size_t j = 0; j < other.len; j++)
         {
             if (str[i + j] != other.str[j])
             {
@@ -517,118 +524,87 @@ size_t MyString::rfind(const MyString& other, size_t pos)
 
 }
 
-bool MyString::contains(const MyString& other)
+bool MyString::contains(const MyString& other) const
 {
-    size_t other_len = other.length();
-    size_t this_len = length();
-    
-
-    if (other_len > this_len || other_len == 0)
-    {
-        return false;
-    }
-
-    for (int i = 0; i < static_cast<int>(this_len); i++)
-    {
-        bool match = true;
-
-        if ((this_len - i) < other_len)
-        {
-            return false;
-        }
-
-        for (int j = 0; j < static_cast<int>(other_len); j++)
-        {
-            if (this->str[i+j] != other.str[j])
-            {
-                match = false;
-                break;
-
-            }
-        }
-
-        if (match)
-        {
-            return true;
-        }
-        else
-        {
-            continue;
-        }
-    }
-
-    return false; 
+    return find(other) != npos;
 }
 
-bool MyString::starts_with(const MyString& other)
+bool MyString::starts_with(const MyString& other) const
 {
-    size_t other_len = other.length();
-    size_t this_len = length();
-    
-
-    if (other_len > this_len || other_len == 0)
+    if (other.len > len)
     {
         return false;
     }
 
-    for (int i = 0; i < static_cast<int>(other_len); i++)
+    for (size_t i = 0; i < other.len; i++)
     {
-        if (this->str[i] != other.str[i])
-            {
-                return false;
-                break;
-
-            }
-    }
-
-    return true; 
-}
-
-bool MyString::ends_with(const MyString& other)
-{
-    size_t other_len = other.length();
-    size_t this_len = length();
-    size_t start_indx = this_len - other_len;
-    
-
-    if (other_len > this_len || other_len == 0)
-    {
-        return false;
-    }
-
-
-    for (int j = start_indx; j < static_cast<int>(other_len + start_indx); j++)
-    {
-        if (this->str[j] != other.str[j - start_indx])
+        if (str[i] != other.str[i])
         {
             return false;
-            break;
-
         }
     }
 
     return true; 
 }
 
-
-MyString MyString::substr(size_t pos, size_t count)
+bool MyString::ends_with(const MyString& other) const
 {
-    char* sub_str = new char[count + 1];
-
-    for (int i = pos; i < (pos + count); i++)
+    if (other.len > len)
     {
-        sub_str[i - pos] = str[i];
+        return false;
     }
 
-    sub_str[count] = '\0';
-    MyString result(sub_str);;
-    delete[] sub_str;
+    size_t start = len - other.len;
+
+    for (size_t i = 0; i < other.len; i++)
+    {
+        if (str[start + i] != other.str[i])
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
+MyString MyString::substr(size_t pos, size_t count) const
+{
+    if (pos > len)
+    {
+        throw std::out_of_range("Substring position out of bounds");
+    }
+
+    size_t available = len - pos;
+
+    if (count == npos || count > available)
+    {
+        count = available;
+    }
+
+    MyString result;
+
+    if (count == 0)
+    {
+        return result;
+    }
+
+    result.reserve(count);
+
+    for (size_t i = 0; i < count; i++)
+    {
+        result.str[i] = str[pos + i];
+    }
+
+    result.len = count;
+    result.str[count] = '\0';
+
     return result;
 }
 
-int MyString::compare(const MyString& other)
+int MyString::compare(const MyString& other) const
 {
-    int loop_len = 0;
+    size_t loop_len = (len < other.len) ? len : other.len;
 
     if (length() < other.length())
     {
@@ -639,7 +615,7 @@ int MyString::compare(const MyString& other)
         loop_len = static_cast<int>(other.length());
     }
 
-    for (int i = 0; i < loop_len; i++)
+    for (size_t i = 0; i < loop_len; i++)
     {
         if (str[i] < other.str[i])
         {
@@ -676,4 +652,105 @@ void MyString::swap(MyString& other)
     size_t temp_len = len;
     len = other.len;
     other.len = temp_len;
+}
+
+size_t MyString::capacity() const
+{
+    return cap;
+}
+
+void MyString::reserve(size_t new_cap)
+{
+    if (new_cap <= cap)
+    {
+        return;
+    }
+
+    char* new_str = new char[new_cap + 1];
+
+    for (size_t i = 0; i < len; i++)
+    {
+        new_str[i] = str[i];
+    }
+
+    new_str[len] = '\0';
+
+    delete[] str;
+
+    str = new_str;
+    cap = new_cap;
+}
+
+void MyString::resize(size_t new_len)
+{
+    if (new_len == len)
+    {
+        return;
+    }
+
+    if (new_len > cap)
+    {
+        reserve(new_len);
+    }
+
+    if (new_len > len)
+    {
+        for (size_t i = len; i < new_len; i++)
+        {
+            str[i] = '\0';
+        }
+    }
+
+    len = new_len;
+    str[len] = '\0';
+    
+}
+
+void MyString::shrink_to_fit()
+{
+    if (cap == len)
+    {
+        return;
+    }
+
+    char* new_str = new char[len + 1];
+
+    for (size_t i = 0; i < len; i++)
+    {
+        new_str[i] = str[i];
+    }
+
+    new_str[len] = '\0';
+    delete[] str;
+    str = new_str;
+    cap = len;
+}
+
+char* MyString::begin()
+{
+    return str;
+}
+
+char* MyString::end()
+{
+    return str + len;
+}
+
+const char* MyString::begin() const
+{
+    return str;
+}
+
+const char* MyString::end() const
+{
+    return str + len;
+}
+
+const char* MyString::cbegin() const
+{
+    return str;
+}
+const char* MyString::cend() const
+{
+    return str + len;
 }
